@@ -1,62 +1,81 @@
 <!DOCTYPE html>
-<html lang="uz">
+<html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <title>Valyuta Hisoblagich</title>
+  <meta charset="UTF-8">
+  <title>Конвертер валют</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      padding: 20px;
-      background: #f4f4f4;
+      background: #eef2f3;
+      padding: 30px;
+      max-width: 400px;
+      margin: auto;
     }
     h2 {
-      color: #333;
+      color: #2c3e50;
+      text-align: center;
     }
-    select, input {
-      padding: 10px;
-      margin: 5px 0;
+    select, input, button {
       width: 100%;
+      padding: 12px;
+      margin: 10px 0;
       font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
     }
     button {
-      padding: 10px;
-      background-color: #007bff;
+      background-color: #3498db;
       color: white;
       border: none;
       cursor: pointer;
-      width: 100%;
+    }
+    button:hover {
+      background-color: #2980b9;
     }
     .result {
-      margin-top: 15px;
       font-size: 18px;
       font-weight: bold;
+      color: #2c3e50;
+      margin-top: 15px;
+      text-align: center;
+    }
+    .footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 12px;
+      color: #888;
     }
   </style>
 </head>
 <body>
-  <h2>Valyuta Hisoblagich (UZS, TJS, USD, RUB)</h2>
-  
-  <label>Miqdor kiriting:</label>
-  <input type="number" id="amount" placeholder="Masalan: 1000" />
+  <h2>Конвертер валют</h2>
 
-  <label>Qaysi valyutadan:</label>
+  <label>Введите сумму:</label>
+  <input type="number" id="amount" placeholder="Например: 1000">
+
+  <label>Из валюты:</label>
   <select id="from">
-    <option value="UZS">UZS - So'm</option>
-    <option value="TJS">TJS - Somoni</option>
-    <option value="USD">USD - Dollar</option>
-    <option value="RUB">RUB - Rubl</option>
+    <option value="UZS">UZS - Узбекский сум</option>
+    <option value="TJS">TJS - Таджикский сомони</option>
+    <option value="USD">USD - Доллар США</option>
+    <option value="RUB">RUB - Российский рубль</option>
   </select>
 
-  <label>Qaysi valyutaga:</label>
+  <label>В валюту:</label>
   <select id="to">
-    <option value="TJS">TJS - Somoni</option>
-    <option value="UZS">UZS - So'm</option>
-    <option value="USD">USD - Dollar</option>
-    <option value="RUB">RUB - Rubl</option>
+    <option value="TJS">TJS - Таджикский сомони</option>
+    <option value="UZS">UZS - Узбекский сум</option>
+    <option value="USD">USD - Доллар США</option>
+    <option value="RUB">RUB - Российский рубль</option>
   </select>
 
-  <button onclick="convert()">Hisoblash</button>
+  <button onclick="convert()">Рассчитать</button>
+
   <div class="result" id="result"></div>
+
+  <div class="footer">
+    © 2025 | Автор: Рамазон Бегалиев
+  </div>
 
   <script>
     async function convert() {
@@ -65,18 +84,22 @@
       const to = document.getElementById("to").value;
 
       if (from === to) {
-        document.getElementById("result").innerText = "Iltimos, turli valyutalarni tanlang.";
+        document.getElementById("result").innerText = "Пожалуйста, выберите разные валюты.";
         return;
       }
 
-      const res = await fetch(`https://api.exchangerate.host/convert?from=${from}&to=${to}&amount=${amount}`);
-      const data = await res.json();
+      try {
+        const res = await fetch(`https://api.exchangerate.host/convert?from=${from}&to=${to}&amount=${amount}`);
+        const data = await res.json();
 
-      if (data.result) {
-        document.getElementById("result").innerText = 
-          `${amount} ${from} ≈ ${data.result.toFixed(2)} ${to}`;
-      } else {
-        document.getElementById("result").innerText = "Xatolik yuz berdi. Internet ulanganligini tekshiring.";
+        if (data.result) {
+          document.getElementById("result").innerText = 
+            `${amount} ${from} ≈ ${data.result.toFixed(2)} ${to}`;
+        } else {
+          document.getElementById("result").innerText = "Ошибка при получении данных.";
+        }
+      } catch (error) {
+        document.getElementById("result").innerText = "Нет соединения с интернетом.";
       }
     }
   </script>
