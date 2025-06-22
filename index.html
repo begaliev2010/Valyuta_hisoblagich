@@ -1,1 +1,84 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <title>Valyuta Hisoblagich</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f4f4f4;
+    }
+    h2 {
+      color: #333;
+    }
+    select, input {
+      padding: 10px;
+      margin: 5px 0;
+      width: 100%;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+    }
+    .result {
+      margin-top: 15px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h2>Valyuta Hisoblagich (UZS, TJS, USD, RUB)</h2>
+  
+  <label>Miqdor kiriting:</label>
+  <input type="number" id="amount" placeholder="Masalan: 1000" />
 
+  <label>Qaysi valyutadan:</label>
+  <select id="from">
+    <option value="UZS">UZS - So'm</option>
+    <option value="TJS">TJS - Somoni</option>
+    <option value="USD">USD - Dollar</option>
+    <option value="RUB">RUB - Rubl</option>
+  </select>
+
+  <label>Qaysi valyutaga:</label>
+  <select id="to">
+    <option value="TJS">TJS - Somoni</option>
+    <option value="UZS">UZS - So'm</option>
+    <option value="USD">USD - Dollar</option>
+    <option value="RUB">RUB - Rubl</option>
+  </select>
+
+  <button onclick="convert()">Hisoblash</button>
+  <div class="result" id="result"></div>
+
+  <script>
+    async function convert() {
+      const amount = document.getElementById("amount").value;
+      const from = document.getElementById("from").value;
+      const to = document.getElementById("to").value;
+
+      if (from === to) {
+        document.getElementById("result").innerText = "Iltimos, turli valyutalarni tanlang.";
+        return;
+      }
+
+      const res = await fetch(`https://api.exchangerate.host/convert?from=${from}&to=${to}&amount=${amount}`);
+      const data = await res.json();
+
+      if (data.result) {
+        document.getElementById("result").innerText = 
+          `${amount} ${from} ≈ ${data.result.toFixed(2)} ${to}`;
+      } else {
+        document.getElementById("result").innerText = "Xatolik yuz berdi. Internet ulanganligini tekshiring.";
+      }
+    }
+  </script>
+</body>
+</html>
