@@ -1,107 +1,106 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Конвертер валют</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Garena Donat - WoopPay orqali</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #eef2f3;
-      padding: 30px;
-      max-width: 400px;
-      margin: auto;
-    }
-    h2 {
-      color: #2c3e50;
+      background-color: #f0f4f8;
+      padding: 20px;
       text-align: center;
     }
-    select, input, button {
+    h1 {
+      color: #1a73e8;
+    }
+    form {
+      background: white;
+      max-width: 400px;
+      margin: 30px auto;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: left;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 15px;
+    }
+    input, select {
       width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      font-size: 16px;
+      padding: 10px;
+      margin-top: 8px;
       border: 1px solid #ccc;
-      border-radius: 6px;
+      border-radius: 8px;
+      box-sizing: border-box;
     }
     button {
-      background-color: #3498db;
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background-color: #1a73e8;
       color: white;
+      font-weight: bold;
       border: none;
+      border-radius: 10px;
       cursor: pointer;
+      font-size: 16px;
     }
     button:hover {
-      background-color: #2980b9;
-    }
-    .result {
-      font-size: 18px;
-      font-weight: bold;
-      color: #2c3e50;
-      margin-top: 15px;
-      text-align: center;
-    }
-    .footer {
-      margin-top: 40px;
-      text-align: center;
-      font-size: 12px;
-      color: #888;
+      background-color: #155ab6;
     }
   </style>
 </head>
 <body>
-  <h2>Конвертер валют</h2>
 
-  <label>Введите сумму:</label>
-  <input type="number" id="amount" placeholder="Например: 1000">
+<h1>💎 Garena Donat - WoopPay orqali</h1>
 
-  <label>Из валюты:</label>
-  <select id="from">
-    <option value="UZS">UZS - Узбекский сум</option>
-    <option value="TJS">TJS - Таджикский сомони</option>
-    <option value="USD">USD - Доллар США</option>
-    <option value="RUB">RUB - Российский рубль</option>
+<form id="donatForm">
+  <label for="garenaId">Garena ID yoki foydalanuvchi raqami</label>
+  <input type="text" id="garenaId" name="garenaId" placeholder="Masalan: 123456789" required />
+
+  <label for="amount">Donat miqdorini tanlang</label>
+  <select id="amount" name="amount" required>
+    <option value="">-- Tanlang --</option>
+    <option value="1">100 almaz - 1 USD</option>
+    <option value="3">310 almaz - 3 USD</option>
+    <option value="5">520 almaz - 5 USD</option>
+    <option value="10">1060 almaz - 10 USD</option>
   </select>
 
-  <label>В валюту:</label>
-  <select id="to">
-    <option value="TJS">TJS - Таджикский сомони</option>
-    <option value="UZS">UZS - Узбекский сум</option>
-    <option value="USD">USD - Доллар США</option>
-    <option value="RUB">RUB - Российский рубль</option>
-  </select>
+  <button type="submit">To‘lovga o‘tish</button>
+</form>
+<script>
+  document.getElementById('donatForm').addEventListener('submit', function(event) {
+    event.preventDefault();
 
-  <button onclick="convert()">Рассчитать</button>
+    const garenaId = document.getElementById('garenaId').value.trim();
+    const amount = document.getElementById('amount').value;
 
-  <div class="result" id="result"></div>
-
-  <div class="footer">
-    © 2025 | Автор: Рамазон Бегалиев
-  </div>
-
-  <script>
-    async function convert() {
-      const amount = document.getElementById("amount").value;
-      const from = document.getElementById("from").value;
-      const to = document.getElementById("to").value;
-
-      if (from === to) {
-        document.getElementById("result").innerText = "Пожалуйста, выберите разные валюты.";
-        return;
-      }
-
-      try {
-        const res = await fetch(`https://api.exchangerate.host/convert?from=${from}&to=${to}&amount=${amount}`);
-        const data = await res.json();
-
-        if (data.result) {
-          document.getElementById("result").innerText = 
-            `${amount} ${from} ≈ ${data.result.toFixed(2)} ${to}`;
-        } else {
-          document.getElementById("result").innerText = "Ошибка при получении данных.";
-        }
-      } catch (error) {
-        document.getElementById("result").innerText = "Нет соединения с интернетом.";
-      }
+    if (!garenaId) {
+      alert('Iltimos, Garena ID ni kiriting!');
+      return;
     }
-  </script>
+    if (!amount) {
+      alert('Iltimos, donat miqdorini tanlang!');
+      return;
+    }
+
+    // WoopPay telefon raqami (to‘lov qabul qiluvchi)
+    const woopayNumber = '992031831212'; // Siz bergan raqam
+
+    // To‘lov tavsifi
+    const description = encodeURIComponent(`Garena ID: ${garenaId}, Donat: ${amount} USD`);
+
+    // WoopPay to‘lov URL (misol uchun) - asl WoopPay API dokumentatsiyasiga qarab o‘zgartiring
+    const payUrl = `https://woopay.tj/pay?phone=${woopayNumber}&amount=${amount}&desc=${description}`;
+
+    // Foydalanuvchini to‘lov sahifasiga yo‘naltirish
+    window.location.href = payUrl;
+  });
+</script>
+
 </body>
 </html>
